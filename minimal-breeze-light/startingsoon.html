@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Starting Soon Dark Overlay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #eff0f1;
+            text-align: center;
+        }
+
+        .breadcrumbs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            margin-top: 10px;
+        }
+
+        .breadcrumb-item {
+            margin: 0 10px;
+            font-size: 22px;
+            color: #27ae60;
+        }
+
+        .breadcrumb-item i {
+            margin-right: 5px;
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 50px; /* Adjusted to make space for the breadcrumbs */
+            left: 0;
+            width: 1920px;
+            height: 1030px; /* Adjusted to make space for the breadcrumbs */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message {
+            font-size: 72px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .quote {
+            font-size: 36px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .timer {
+            font-size: 62px;
+            margin-bottom: 20px;
+            color: #f67400;
+        }
+    </style>
+
+    <script>
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        function fetchQuote() {
+            fetch('https://api.quotable.io/random')
+                .then(response => response.json())
+                .then(data => {
+                    const quoteElement = document.querySelector('.quote');
+                    const words = data.content.split(' ');
+
+                    if (words.length <= 10) {
+                        quoteElement.textContent = '"' + data.content + '"';
+                    } else {
+                        // If the quote is longer than 10 words, fetch another one
+                        fetchQuote();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching quote:', error);
+                });
+        }
+
+        window.onload = function () {
+            var tenMinutes = 60 * 10;
+            var display = document.querySelector('.timer');
+            startTimer(tenMinutes, display);
+            fetchQuote();
+        };
+    </script>
+
+</head>
+
+<body>
+    <div class="breadcrumbs">
+        <div class="breadcrumb-item"><i class="fab fa-discord"></i> Discord</div>
+        <div class="breadcrumb-item"><i class="fab fa-mastodon"></i> Mastodon</div>
+        <div class="breadcrumb-item"><i class="fab fa-facebook"></i> Facebook</div>
+        <div class="breadcrumb-item"><i class="fab fa-twitter"></i> Twitter</div>
+        <div class="breadcrumb-item"><i class="fab fa-twitch"></i> Twitch</div>
+        <div class="breadcrumb-item"><i class="fab fa-reddit"></i> Reddit</div>
+    </div>
+    <div class="overlay-container">
+        <h1 class="message">Starting Soon</h1>
+
+        <div class="timer">10:00</div>
+        <div class="quote"></div>
+    </div>
+</body>
+
+</html>
